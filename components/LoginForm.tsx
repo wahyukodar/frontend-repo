@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button, TextField, Typography } from '@mui/material';
-import { loginSuccess } from '../store/actions';
+import { fetchDataSuccess, loginSuccess, logout } from '../store/actions';
 import { useDispatch } from 'react-redux';
-import { loginAPI } from '../apis/userApi';
+import { fetchUserData, loginAPI, logoutAPI } from '../apis/userApi';
 
 const LoginForm: React.FC = () => {
     const dispatch = useDispatch();
@@ -15,10 +15,27 @@ const LoginForm: React.FC = () => {
         setLoading(true);
         try {
             await loginAPI(email, password);
+            const response = await fetchUserData();
+            dispatch(fetchDataSuccess(response));
             dispatch(loginSuccess());
+            alert('Success Login');
         } catch (error) {
             console.error('Login error:', error);
             alert('Failed to login');
+        }
+        setLoading(false);
+    };
+
+    const handleLogout = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await logoutAPI();
+            alert('Success Logout');
+            dispatch(logout());
+        } catch (error) {
+            console.error('Logut error:', error);
+            alert('Failed to logout');
         }
         setLoading(false);
     };
@@ -45,6 +62,16 @@ const LoginForm: React.FC = () => {
             <div className="mt-4">
                 <Button variant="contained" color="primary" onClick={handleLogin} disabled={loading}>
                     Login
+                </Button>
+                {loading && <Typography>Loading...</Typography>}
+
+                <Button variant="contained" sx={{
+                    backgroundColor: 'red',
+                    '&:hover': {
+                        backgroundColor: 'darkred',
+                    },
+                }} onClick={handleLogout} disabled={loading}>
+                    Logout
                 </Button>
                 {loading && <Typography>Loading...</Typography>}
             </div>

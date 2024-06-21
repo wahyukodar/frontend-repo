@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { auth } from '../config/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000';
 
@@ -43,4 +43,8 @@ export const fetchUserData = async () => {
 
 export const loginAPI = async (email: string, password: string) => {
   await signInWithEmailAndPassword(auth, email, password);
+};
+
+export const logoutAPI = async () => {
+  await signOut(auth);
 };

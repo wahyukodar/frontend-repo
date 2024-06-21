@@ -73,7 +73,9 @@ const UpdateButton: React.FC = () => {
       await updateUserData(dataToUpdate);
       const response = await fetchUserData();
       dispatch(updateDataSuccess(response));
+      alert('Success Update Data')
     } catch (error: any) {
+      alert('Failed update')
       // toast.error(error.message);
     } finally {
       // toast.success('Success update data');

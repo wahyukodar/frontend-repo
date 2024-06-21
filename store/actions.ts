@@ -72,6 +72,7 @@ const userSlice = createSlice({
     },
     logout(state) {
       state.isAuthenticated = false;
+      state.data = null;
     },
     fetchDataSuccess(state, action: PayloadAction<any>) {
       state.data = action.payload;

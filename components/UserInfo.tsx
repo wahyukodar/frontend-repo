@@ -12,7 +12,6 @@ const UserInfo = () => {
     const { data } = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
-        console.log('dd')
         fetchData();
     }, []);
 

@@ -1,65 +1,18 @@
-// import { signInWithEmailAndPassword } from 'firebase/auth';
-// import { auth } from '../config/firebase';
-// import { updateUserData, fetchUserData } from '../apis/userApi';
-// import { AppDispatch } from './store';
-// import {
-//   loginRequest, loginSuccess, loginFailure, fetchDataRequest, fetchDataSuccess, fetchDataFailure,
-//   updateDataRequest, updateDataSuccess, updateDataFailure
-// } from './reducers';
-
-// export const fetchData = () => async (dispatch: AppDispatch) => {
-//   dispatch(fetchDataRequest());
-//   try {
-//     const data = await fetchUserData();
-//     dispatch(fetchDataSuccess(data));
-//   } catch (error: any) {
-//     dispatch(fetchDataFailure(error.message));
-//   }
-// };
-
-// export const updateData = (data: Record<string, any>) => async (dispatch: AppDispatch) => {
-//   dispatch(updateDataRequest());
-//   try {
-//     const updatedData = await updateUserData(data);
-//     dispatch(updateDataSuccess(updatedData));
-//   } catch (error: any) {
-//     dispatch(updateDataFailure(error.message));
-//   }
-// };
-
-// export const login = (email: string, password: string) => async (dispatch: AppDispatch) => {
-//   dispatch(loginRequest());
-//   try {
-//     // Implement Firebase authentication logic here
-//     // Example:
-//     // await firebase.auth().signInWithEmailAndPassword(email, password);
-//     console.log('signin')
-//     await signInWithEmailAndPassword(auth, email, password);
-//     console.log('success')
-//     dispatch(loginSuccess());
-//   } catch (error: any) {
-//     console.log('error')
-//     dispatch(loginFailure(error.message));
-//   }
-// };
-
-// export const logout = () => async (dispatch: AppDispatch) => {
-//   // Implement Firebase sign out logic here
-//   // Example:
-//   // await firebase.auth().signOut();
-//   dispatch(logout());
-// };
-
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserState {
   isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
+  loginError: string | null;
   data: any;
 }
 
 const initialState: UserState = {
   isAuthenticated: false,
+  loading: false,
+  error: null,
+  loginError: null,
   data: null,
 };
 
@@ -67,27 +20,57 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    loginRequest(state) {
+      state.loading = true;
+      state.loginError = null;
+    },
     loginSuccess(state) {
       state.isAuthenticated = true;
+      state.loading = false;
+    },
+    loginFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.loginError = action.payload;
     },
     logout(state) {
       state.isAuthenticated = false;
       state.data = null;
     },
+    fetchDataRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
     fetchDataSuccess(state, action: PayloadAction<any>) {
+      state.loading = false;
       state.data = action.payload;
+    },
+    fetchDataFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    updateDataRequest(state) {
+      state.loading = true;
+      state.error = null;
     },
     updateDataSuccess(state, action: PayloadAction<any>) {
+      state.loading = false;
       state.data = action.payload;
     },
+    updateDataFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    showError(state, action: PayloadAction<string>) {
+      state.error = action.payload;
+    }
   },
 });
 
 export const {
-  loginSuccess, 
-  logout,
-  fetchDataSuccess,
-  updateDataSuccess,
+  loginRequest, loginSuccess, loginFailure, logout,
+  fetchDataRequest, fetchDataSuccess, fetchDataFailure,
+  updateDataRequest, updateDataSuccess, updateDataFailure,
+  showError
 } = userSlice.actions;
 
 export const userReducer = userSlice.reducer;

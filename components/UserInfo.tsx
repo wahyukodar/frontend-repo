@@ -1,37 +1,41 @@
+import { fetchUserData } from '@/apis/userApi';
+import { fetchDataFailure, fetchDataRequest, fetchDataSuccess } from '@/store/actions';
+import { RootState } from '@/store/store';
 import { Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { RootState } from '../store/reducers';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserData } from '../apis/userApi';
-import { fetchDataSuccess } from '../store/actions';
-// import { ToastContainer, toast } from 'react-toastify';
 
 const UserInfo = () => {
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
-    const { data } = useSelector((state: RootState) => state.user);
+    const { data, loading, isAuthenticated } = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
-        fetchData();
+        if (isAuthenticated) {
+            fetchData();
+        }
     }, []);
 
     const fetchData = async () => {
         try {
+            dispatch(fetchDataRequest());
             const response = await fetchUserData();
             dispatch(fetchDataSuccess(response));
         } catch (error: any) {
-            // toast.error(error.message);
-        } finally {
-            setLoading(false);
+            dispatch(fetchDataFailure(error.message));
         }
     }
 
     return (
-        <div>
-
-            {loading && <Typography>Loading...</Typography>}
-            {data && <div><h1>Data from API</h1> <Typography>{JSON.stringify(data, null, 2)}</Typography></div>}
-            {/* <ToastContainer/> */}
+        <div className="p-4">
+            {loading && <Typography className="text-black">Loading...</Typography>}
+            {data && (
+                <div>
+                    <Typography variant="h6" className="mb-4 p-2" color={"black"}>Data from API</Typography>
+                    <Typography component="div" className="p-2" color={"black"}>
+                        <pre className="text-black">{JSON.stringify(data, null, 2)}</pre>
+                    </Typography>
+                </div>
+            )}
         </div>
     );
 };

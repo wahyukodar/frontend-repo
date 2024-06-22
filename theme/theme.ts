@@ -1,4 +1,5 @@
 'use client';
+
 import { Roboto } from 'next/font/google';
 import { createTheme } from '@mui/material/styles';
 
@@ -13,9 +14,11 @@ const theme = createTheme({
         fontFamily: roboto.style.fontFamily,
     },
     palette: {
-        mode: 'light',
-        background: {
-            default: '#ffffff',
+        primary: {
+            main: '#1976d2',
+        },
+        secondary: {
+            main: '#dc004e',
         },
     },
 });

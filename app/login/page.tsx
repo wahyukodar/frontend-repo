@@ -41,7 +41,7 @@ const LoginForm: React.FC = () => {
         router.push('/');
       }, 2000);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, router]);
 
   return (
     <div className="bg-gray-100 min-h-screen">

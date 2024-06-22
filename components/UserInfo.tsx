@@ -2,20 +2,14 @@ import { fetchUserData } from '@/apis/userApi';
 import { fetchDataFailure, fetchDataRequest, fetchDataSuccess } from '@/store/actions';
 import { RootState } from '@/store/store';
 import { Typography } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const UserInfo = () => {
     const dispatch = useDispatch();
     const { data, loading, isAuthenticated } = useSelector((state: RootState) => state.user);
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            fetchData();
-        }
-    }, []);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             dispatch(fetchDataRequest());
             const response = await fetchUserData();
@@ -23,7 +17,13 @@ const UserInfo = () => {
         } catch (error: any) {
             dispatch(fetchDataFailure(error.message));
         }
-    }
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchData();
+        }
+    }, [isAuthenticated, fetchData]);
 
     return (
         <div className="p-4">

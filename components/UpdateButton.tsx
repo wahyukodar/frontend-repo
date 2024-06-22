@@ -32,7 +32,7 @@ const UpdateButton: React.FC = () => {
       dispatch(updateDataRequest());
       await updateUserData(dataToUpdate);
       const response = await fetchUserData();
-      dispatch(updateDataSuccess(response));
+      dispatch(updateDataSuccess(response.data));
       toast.success('Success update data');
     } catch (error: any) {
       toast.error(error.message);
@@ -68,7 +68,7 @@ const UpdateButton: React.FC = () => {
         <Button
           variant="contained"
           color="primary"
-          disabled={loading}
+          // disabled={loading}
           fullWidth
           type="submit"
         >

@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { fetchDataSuccess, loginFailure, loginRequest, loginSuccess } from '@/store/actions';
-import { fetchUserData, loginAPI } from '@/apis/userApi';
+import { createUser, fetchUserData, loginAPI } from '@/apis/userApi';
 import { RootState } from '@/store/store';
 
 const LoginForm: React.FC = () => {
@@ -22,8 +22,12 @@ const LoginForm: React.FC = () => {
     dispatch(loginRequest())
     try {
       await loginAPI(email, password);
+      if (process.env.NODE_ENV === 'development') {
+        await createUser();
+      }
       const response = await fetchUserData();
-      dispatch(fetchDataSuccess(response));
+      dispatch(fetchDataSuccess(response.data));
+
       dispatch(loginSuccess());
       toast.success('Success Login');
       setTimeout(() => {

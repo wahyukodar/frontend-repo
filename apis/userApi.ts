@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { auth } from '../config/firebase';
+import { auth } from '@/config/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000';
@@ -23,7 +23,7 @@ export const updateUserData = async (data: Record<string, any>) => {
       },
     }
   );
-  return response.data;
+  return response;
 };
 
 export const fetchUserData = async () => {
@@ -37,8 +37,31 @@ export const fetchUserData = async () => {
       Authorization: `Bearer ${token}`,
     },
   });
- 
-  return response.data;
+
+  return response;
+};
+
+export const createUser = async () => {
+  const token = await auth.currentUser?.getIdToken();
+  const uid = auth.currentUser?.uid;
+  const displayName = auth.currentUser?.displayName ?? 'Default Display Name';
+  const email = auth.currentUser?.email;
+  console.log(uid)
+  if (!uid) {
+    throw new Error('User not authenticated');
+  }
+  const response = await axios.post(
+    `${API_URL}/create-user`,
+    { uid, email, displayName },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response;
 };
 
 export const loginAPI = async (email: string, password: string) => {

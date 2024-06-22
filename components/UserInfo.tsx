@@ -13,7 +13,7 @@ const UserInfo = () => {
         try {
             dispatch(fetchDataRequest());
             const response = await fetchUserData();
-            dispatch(fetchDataSuccess(response));
+            dispatch(fetchDataSuccess(response.data));
         } catch (error: any) {
             dispatch(fetchDataFailure(error.message));
         }
